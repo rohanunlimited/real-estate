@@ -8,8 +8,8 @@ test('Header',()=>{
         const placeholderElement = screen.getByPlaceholderText(/e.g. Admin User/i);
         const placeholderElementtwo = screen.getByPlaceholderText(/select action type/i);
         const placeholderElementthree = screen.getByPlaceholderText(/select application type/i);
-        const placeholderElementfour = screen.getByPlaceholderText(/Select From date/i);
-        const placeholderElementfive = screen.getByPlaceholderText(/Select To date/i);
+        const placeholderElementfour = screen.getByPlaceholderText(/YYYY-MM-DD/i);
+  
         const placeholderElementSix = screen.getByRole("button");
         
         expect(textElement).toBeInTheDocument();
@@ -17,7 +17,7 @@ test('Header',()=>{
         expect(placeholderElementtwo).toBeInTheDocument();
         expect(placeholderElementthree).toBeInTheDocument();
         expect(placeholderElementfour).toBeInTheDocument();
-        expect(placeholderElementfive).toBeInTheDocument();
+   
         expect(placeholderElementSix).toBeInTheDocument();
 
 })

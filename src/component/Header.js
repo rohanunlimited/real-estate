@@ -69,11 +69,11 @@ export default function Header({setSearch,emp, setStartDate, setEndDate,setIsSea
     </div>
     <div>
     <span>From Date</span>
-    <input placeholder='Select From date' onChange={(e)=> searchFromDate(e)}/>
+    <input placeholder='YYYY-MM-DD' onChange={(e)=> searchFromDate(e)}/>
     </div>
     <div>
     <span>To Date</span>
-    <input placeholder='Select To date' onChange={(e)=> searchToDate(e)}  />
+    <input placeholder='YYYY-MM-DD' onChange={(e)=> searchToDate(e)}  />
     </div>
     <div>
     <span>Application ID</span>
