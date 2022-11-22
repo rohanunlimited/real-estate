@@ -27,7 +27,7 @@ function App() {
   const currentPosts = emp.slice(indexOfFirstPost, indexOfLastPost);
 
   const paginate = (num)=> {
-  
+   
     setCurrentPage(num)}
   return (
     <div id='App' className="App">
