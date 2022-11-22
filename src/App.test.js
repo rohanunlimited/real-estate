@@ -1,8 +1,10 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { render } from "@testing-library/react"
+import App from "./App"
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
+it("app", async ()=>{
+    
+    const response = new App();
+    var data= await response.api();
+    expect(data.data.result.auditLog[0].userId).toEqual("115678")
+
+})
