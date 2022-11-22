@@ -2,7 +2,22 @@ import React, { useEffect, useState } from 'react'
 import './Header.css'
 
 export default function Header({setSearch,emp, setStartDate, setEndDate,setIsSearch}) {
-  
+  const [empValue, setEmpValue] = useState([])
+  useEffect(()=>{
+   
+   const emp2 =[];
+   const res = {};
+   for(let i = 0; i<emp.length;i++){
+     if(res[emp[i].actionType]){
+         continue
+     }else {
+      emp2.push(emp[i]);
+      res[emp[i].actionType] = 1;
+     }
+   }
+   setEmpValue(emp2)
+
+  },[emp])
 
   const searchApplicationId = (e)=>{
     setIsSearch(false)
@@ -48,7 +63,8 @@ export default function Header({setSearch,emp, setStartDate, setEndDate,setIsSea
     <select defaultValue={null}
     placeholder="select action type"
     onClick={(e)=> searchActionType(e)}>{
-      emp?.map(em=>{
+      
+      empValue?.map(em=>{
         return <option key={em.logId}>
           {em.actionType}
         </option>
@@ -60,7 +76,7 @@ export default function Header({setSearch,emp, setStartDate, setEndDate,setIsSea
     <select 
     placeholder='select application type'
     onClick={(e)=> searchApplicationType(e)}>{
-      emp?.map(e=>{
+      empValue?.map(e=>{
         return <option key={e.logId}>
           {e.applicationType}
         </option>
