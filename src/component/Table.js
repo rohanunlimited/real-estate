@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Header from './Header'
 import { useParams } from 'react-router-dom'
 
@@ -6,7 +6,7 @@ import { AiOutlineArrowUp } from 'react-icons/ai'
 import { AiOutlineArrowDown } from 'react-icons/ai';
 import  './Table.css'
 
-export default function Table({ emp, loading, log }) {
+export default function Table({ emp, loading, log,myparams }) {
     const [search, setSearch] = useState({});
     const [empone, setEmpOne] = useState([]);
     const [startDate, setStartDate] = useState();
@@ -17,34 +17,26 @@ export default function Table({ emp, loading, log }) {
     const [sortActionType, setSortActionType] = useState(false);
     const [dateSort, setDateSort] = useState(false);
 
-    useEffect(() => {
-        const startYear = `${startDate}`.split('-')[0];
-        const endYear = `${endDate}`.split('-')[0];
-        const startDay = `${startDate}`.split('-')[1];
-        const endDay = `${endDate}`.split('-')[1];
-        const startMonth = `${startDate}`.split('-')[2];
-        const endMonth = `${endDate}`.split('-')[2];
 
+    useEffect(()=>{
+       
 
+        const startdate = new Date(startDate);
+      
+        const endate = new Date(endDate)
+     
         const em = emp?.filter(e => {
-            if (`${e.creationTimestamp}`.split('-')[0] >= startYear && `${e.creationTimestamp}`.split('-')[0] <= endYear && startYear != endYear) {
-                return true
-            }
-            else if (`${e.creationTimestamp}`.split('-')[1] >= startDay && `${e.creationTimestamp}`.split('-')[1] <= endDay && startDay != endDay) {
-                return true
-            }
-            else if (`${e.creationTimestamp}`.split('-')[2] >= startMonth && `${e.creationTimestamp}`.split('-')[2] <= endMonth && startMonth != endMonth) {
-                return true
-            }
+            const d = e.creationTimestamp.split(" ")[0]
+           const date = new Date(d);
+           return date>= startdate && date<=endate
 
 
         })
+  
 
         setEmpOne(em)
 
-    }, [startDate, endDate])
-
-
+    },[startDate,endDate])
 
 
 
@@ -129,7 +121,7 @@ export default function Table({ emp, loading, log }) {
 
     return (
         <>
-            <Header emp={log} setSearch={setSearch} setStartDate={setStartDate} setEndDate={setEndDate} />
+            <Header emp={log} setSearch={setSearch} setStartDate={setStartDate} setEndDate={setEndDate} search={search} myparams={myparams} />
             <table>
                 <thead>
 

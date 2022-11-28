@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios'
@@ -12,6 +12,10 @@ function App() {
   const [postsPerPage, setPostsPerPage] = useState(10);
   const [loading, setLoading] = useState(true)
   const [emp, setEmp] = useState([]);
+  const myparams = useRef();
+
+  myparams.current = new URLSearchParams(window.location.search)
+         
 
   useEffect(async () => {
     try {
@@ -21,7 +25,7 @@ function App() {
      
       setEmp(array)
       setLoading(false);
-      localStorage.setItem('emp', JSON.stringify(array))
+    
     } catch (e) {
 
     }
@@ -40,7 +44,7 @@ function App() {
   }
   return (
     <div id='App' className="App">
-      <Table emp={currentPosts} loading={loading} log={emp} />
+      <Table emp={currentPosts} loading={loading} log={emp}  myparams={myparams}/>
 
       <Pagination postPerPage={postsPerPage} totalPost={emp.length} paginate={paginate} />
     </div>

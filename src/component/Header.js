@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import './Header.css'
 
-export default function Header({ setSearch, emp, setStartDate, setEndDate, setIsSearch }) {
+export default function Header({ setSearch,search, emp, setStartDate, setEndDate, setIsSearch, myparams}) {
     const [empValue, setEmpValue] = useState([]);
     const [actionType, setActionType] = useState('');
     const [applicationType, setApplicationType] = useState('');
@@ -9,30 +9,50 @@ export default function Header({ setSearch, emp, setStartDate, setEndDate, setIs
     const [emp2, setEmp2Value] = useState([])
     const [fdate, setfdate] = useState('');
     const [tdate, settdate] = useState('')
-    const myparams = useRef();
-    myparams.current = new URLSearchParams(window.location.search);
+    const [ istrue, setIsTrue] = useState(false);
+
+   
+
 
     useEffect(() => {
         if (myparams.current) {
             if (myparams.current.has('actionType')) {
-
+              
                 setActionType(myparams.current.get('actionType').replaceAll('"', ''))
-            }
-            else if (myparams.current.has('applicationType')) {
-
-                setApplicationType(myparams.current.get('applicationType').replaceAll('"', ''))
-            }
-            else if (myparams.current.has('applicationId')) {
-                setApplicationId(myparams.current.get('applicationId').replaceAll('"', ''))
-            }
-            else if (myparams.current.has('startDate') && myparams.current.has('endDate')) {
-                setfdate(myparams.current.get('startDate'))
-                settdate(myparams.current.get('endDate'))
+            //  setSearch({ 'actionType': actionType })
                 
             }
-        }
-    }, [])
+            else if (myparams.current.has('applicationType')) {
+             
 
+                setApplicationType(myparams.current.get('applicationType').replaceAll('"', ''))
+               
+               
+            }
+            else if (myparams.current.has('applicationId')) {
+               
+                setApplicationId(myparams.current.get('applicationId').replaceAll('"', ''))
+               
+            }
+            else if (myparams.current.has('startDate') && myparams.current.has('endDate')) {
+          
+                setfdate(myparams.current.get('startDate'))
+                settdate(myparams.current.get('endDate'))
+               
+            }
+        
+        }
+    handleclick()
+    }, [myparams])
+
+    useEffect(()=>{
+        handleclick()
+    },[])
+
+  
+
+    
+    
 
     useEffect(() => {   
 
@@ -102,8 +122,12 @@ export default function Header({ setSearch, emp, setStartDate, setEndDate, setIs
         setActionType('');
         setApplicationType('');
         setApplicationId('');
-        setEndDate('');
-        setfdate(e.target.value)
+      const y = `${e.target.value}`.split("-")[0];
+      const m = `${e.target.value}`.split("-")[2];
+      const d = `${e.target.value}`.split("-")[1];
+    
+      
+        setfdate(`${d}-${m}-${y}`)
        
     }
 
@@ -111,11 +135,13 @@ export default function Header({ setSearch, emp, setStartDate, setEndDate, setIs
         setActionType('');
         setApplicationType('');
         setApplicationId('');
-        setStartDate('');
-        settdate(e.target.value)
+        const y = `${e.target.value}`.split("-")[0];
+        const m = `${e.target.value}`.split("-")[2];
+        const d = `${e.target.value}`.split("-")[1]
+        settdate(`${d}-${m}-${y}`)
     }
 
-    const handleclick = () => {
+    const  handleclick = ()=>{
 
         if (actionType) {
 
@@ -126,14 +152,15 @@ export default function Header({ setSearch, emp, setStartDate, setEndDate, setIs
             setSearch({ 'applicationType': applicationType })
         } else if (applicationId) {
             setSearch({ 'applicationId': applicationId })
-        } else if (fdate) {
-            setStartDate(fdate)
-        } else if (tdate) {
+        } else if (fdate && tdate) {
+            setStartDate(fdate);
             setEndDate(tdate)
+            
         }
-
+          
     }
     return (
+        
         <div className="header">
 
             <div>
@@ -168,11 +195,11 @@ export default function Header({ setSearch, emp, setStartDate, setEndDate, setIs
             </div>
             <div>
                 <span>From Date</span>
-                <input placeholder='YYYY-MM-DD' onChange={(e) => searchFromDate(e)} />
+                <input type="date" placeholder='YYYY-MM-DD' onChange={(e) => searchFromDate(e)} />
             </div>
             <div>
                 <span>To Date</span>
-                <input placeholder='YYYY-MM-DD' onChange={(e) => searchToDate(e)} />
+                <input type="date" placeholder='YYYY-MM-DD' onChange={(e) => searchToDate(e)} />
             </div>
             <div>
                 <span>Application ID</span>
