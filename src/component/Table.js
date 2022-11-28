@@ -3,7 +3,8 @@ import Header from './Header'
 import { useParams } from 'react-router-dom'
 
 import { AiOutlineArrowUp } from 'react-icons/ai'
-import { AiOutlineArrowDown } from 'react-icons/ai'
+import { AiOutlineArrowDown } from 'react-icons/ai';
+import  './Table.css'
 
 export default function Table({ emp, loading, log }) {
     const [search, setSearch] = useState({});
@@ -12,8 +13,8 @@ export default function Table({ emp, loading, log }) {
     const [endDate, setEndDate] = useState();
     const [sortLogId, setSortLogId] = useState('');
     const [applicationsortId, setApplicationSortId] = useState('');
-    const [applicationTypeSort, setApplicationTypeSort] = useState('');
-    const [sortActionType, setSortActionType] = useState('');
+    const [applicationTypeSort, setApplicationTypeSort] = useState(false);
+    const [sortActionType, setSortActionType] = useState(false);
     const [dateSort, setDateSort] = useState(false);
 
     useEffect(() => {
@@ -93,31 +94,36 @@ export default function Table({ emp, loading, log }) {
 
     const applicationTypeBySort = () => {
         let em = []
-        if (applicationTypeSort) {
-            em = emp.sort()
-        } else {
-            em = emp.reverse()
-        }
+       em = emp.sort((a,b)=>{
+        const isreversed = applicationTypeSort ?1:-1
+        return isreversed * a?.applicationType?.localeCompare(b.applicationType)
+       })
         setEmpOne(em)
     }
 
     const actionTypeSort = () => {
         let em = [];
-        if (sortActionType) {
-            em = emp.sort()
-        } else {
-            em = emp.reverse()
-        }
-        setEmpOne(em)
+      
+
+        
+            em = emp.sort((a,b)=>{
+                const isreversed = sortActionType? 1: -1;
+                return isreversed* a.actionType.localeCompare(b.actionType)  
+            })
+                setEmpOne(em)
+                
+            
+        
+     
     }
 
     const dateBySort = () => {
         let em = [];
-        if (dateSort) {
-            em = emp.sort()
-        } else {
-            em = emp.reverse()
-        }
+        em = emp.sort((a,b)=>{
+            const isreversed = dateSort? 1:-1;
+            return isreversed * a.creationTimestamp.localeCompare(b.creationTimestamp)
+          })
+          setEmpOne(em)
 
     }
 
@@ -146,8 +152,11 @@ export default function Table({ emp, loading, log }) {
                         >Application ID {applicationsortId ? <AiOutlineArrowUp /> : <AiOutlineArrowDown />}</th>
                         <th
                             onClick={() => {
-                                setSortActionType(!sortActionType)
-                                actionTypeSort()
+                               
+                                setSortActionType(!sortActionType);
+                                   actionTypeSort()
+                                
+                                
                             }}
 
                         >Action{sortActionType ? <AiOutlineArrowUp /> : <AiOutlineArrowDown />}</th>
@@ -155,7 +164,7 @@ export default function Table({ emp, loading, log }) {
                         <th
                             onClick={() => {
                                 setDateSort(!dateSort);
-                                setTimeout(() => dateBySort(), 0)
+                                dateBySort()
                             }}
                         >Date:Time sort{dateSort ? <AiOutlineArrowUp /> : <AiOutlineArrowDown />}</th>
                     </tr>

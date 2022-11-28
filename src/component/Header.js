@@ -73,7 +73,7 @@ export default function Header({ setSearch, emp, setStartDate, setEndDate, setIs
         setApplicationType('');
         setStartDate('');
         setEndDate('');
-        myparams.current = {}
+        
 
 
     }
@@ -87,7 +87,7 @@ export default function Header({ setSearch, emp, setStartDate, setEndDate, setIs
         setApplicationId('')
         setStartDate('')
         setEndDate('')
-        myparams.current = {}
+   
     }
     const searchActionType = (e) => {
         setActionType(e.target.value)
@@ -95,7 +95,7 @@ export default function Header({ setSearch, emp, setStartDate, setEndDate, setIs
         setApplicationId('');
         setStartDate('');
         setEndDate('');
-        myparams.current = {}
+      
     }
 
     const searchFromDate = (e) => {
@@ -104,6 +104,7 @@ export default function Header({ setSearch, emp, setStartDate, setEndDate, setIs
         setApplicationId('');
         setEndDate('');
         setfdate(e.target.value)
+       
     }
 
     const searchToDate = (e) => {
@@ -178,7 +179,7 @@ export default function Header({ setSearch, emp, setStartDate, setEndDate, setIs
                 <input placeholder='e.g. 219841/2021' name="applicationId" onChange={(e) => searchApplicationId(e)} />
             </div>
             <div>
-                <input type="button" className="button" value="Search Logger" onClick={() => handleclick()} />
+                <button type="button" className="button"  onClick={() => handleclick()} >Search Logger</button>
             </div>
         </div>
     )
