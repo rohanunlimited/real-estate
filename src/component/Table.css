@@ -10,7 +10,9 @@ table th {
     font-family: Arial, Helvetica, sans-serif;
   
 }
-
+h1{
+    color: red;
+}
 th,
 td {
     border: 1px solid #ddd;

@@ -3,108 +3,56 @@ import Header from './Header'
 import { AiOutlineArrowUp } from 'react-icons/ai'
 import { AiOutlineArrowDown } from 'react-icons/ai';
 import './Table.css'
+import Pagination from './Pagination';
 
-export default function Table({ emp, loading, log, myparams, searchparam }) {
-    const [search, setSearch] = useState({});
-    const [empone, setEmpOne] = useState([]);
-    const [startDate, setStartDate] = useState();
-    const [endDate, setEndDate] = useState();
+export default function Table({ emp,  log,loading,isFilter,postPerPage, totalPost,currentPage,paginate, setIsFilter }) {
+    const [empOne, setEmpOne] = useState([]);
     const [sortLogId, setSortLogId] = useState('');
-    const [applicationsortId, setApplicationSortId] = useState('');
+    const [applicationSortId, setApplicationSortId] = useState('');
     const [applicationTypeSort, setApplicationTypeSort] = useState(false);
     const [sortActionType, setSortActionType] = useState(false);
     const [dateSort, setDateSort] = useState(false);
+    const[isSort, setSort] = useState(false);
 
+useEffect(()=>{
+ handlelog()
+},[loading])
 
-
-    useEffect(() => {
-
-
-        const startdate = new Date(startDate);
-
-        const endate = new Date(endDate)
-
-
-        const em = emp?.filter(e => {
-            const d = e.creationTimestamp.split(" ")[0]
-            const date = new Date(d);
-            return date >= startdate && date <= endate
-
-
-        })
-
-
-        setEmpOne(em)
-
-    }, [startDate, endDate])
-
-
-    useEffect(() => {
-
-        if (searchparam?.startDate && searchparam?.endDate) {
-            if (!startDate && !endDate) {
-
-                setStartDate(`${searchparam?.startDate}`);
-                setEndDate(`${searchparam?.endDate}`);
-
-
-            }
-
-        } else {
-            if (!search?.actionType && !search?.applicationType && !search?.applicationId) {
-                setSearch(searchparam)
-            }
+    const handlelog = ()=>{
+        if(!isFilter){
+           setEmpOne(emp)
+        }else {
+            setEmpOne(empOne)
         }
-
-    }, [search])
-    useEffect(() => {
-        setSearch({})
-    }, [emp, loading])
-
-    useEffect(() => {
-
-        const emp1 = emp?.filter(e => {
-            if (Object.keys(search)[0] == 'actionType') {
-                if (e?.actionType?.includes(search.actionType)) {
-                    return e?.actionType?.includes(search.actionType)
-                }
-            }
-            else
-                if (Object.keys(search)[0] == "applicationType") {
-                    return e?.applicationType?.includes(search.applicationType) ? true : false
-                } else if (Object.keys(search)[0] == "applicationId") {
-                    return `${e?.applicationId}`.includes(`${search.applicationId}`)
-                }
-        })
-
-
-        setEmpOne(emp1)
-    }, [search])
-
+    }
+    
     const sortLogById = () => {
+        setSort(true)
         let em = []
         if (sortLogId) {
-            em = emp?.sort((a, b) => b.logId - a.logId)
+            em = log?.sort((a, b) => b.logId - a.logId)
         } else {
-            em = emp?.sort((a, b) => a.logId - b.logId)
+            em = log?.sort((a, b) => a.logId - b.logId)
         }
         setEmpOne(em)
     }
 
     const applicationIdSort = () => {
+        setSort(true)
         let em = []
-        if (applicationsortId) {
-            em = emp?.sort((a, b) => b.applicationId - a.applicationId)
+        if (applicationSortId) {
+            em = log?.sort((a, b) => b.applicationId - a.applicationId)
         } else {
-            em = emp?.sort((a, b) => a.applicationId - b.applicationId)
+            em = log?.sort((a, b) => a.applicationId - b.applicationId)
         }
         setEmpOne(em)
     }
 
 
     const applicationTypeBySort = () => {
+        setSort(true)
         let em = []
-        em = emp?.sort((a, b) => {
+        em = log?.sort((a, b) => {
             const isreversed = applicationTypeSort ? 1 : -1
             return isreversed * a?.applicationType?.localeCompare(b.applicationType)
         })
@@ -112,11 +60,12 @@ export default function Table({ emp, loading, log, myparams, searchparam }) {
     }
 
     const actionTypeSort = () => {
+        setSort(true)
         let em = [];
+        
 
 
-
-        em = emp?.sort((a, b) => {
+        em = log?.sort((a, b) => {
             const isreversed = sortActionType ? 1 : -1;
             return isreversed * a.actionType.localeCompare(b.actionType)
         })
@@ -128,8 +77,9 @@ export default function Table({ emp, loading, log, myparams, searchparam }) {
     }
 
     const dateBySort = () => {
+        setSort(true)
         let em = [];
-        em = emp?.sort((a, b) => {
+        em = log?.sort((a, b) => {
             const isreversed = dateSort ? 1 : -1;
             return isreversed * a.creationTimestamp.localeCompare(b.creationTimestamp)
         })
@@ -139,7 +89,7 @@ export default function Table({ emp, loading, log, myparams, searchparam }) {
 
     return (
         <>
-            <Header emp={log} setSearch={setSearch} setStartDate={setStartDate} setEndDate={setEndDate}  />
+            <Header emp={log} empOne={emp} setSort={setSort} setEmpOne={setEmpOne}  setIsFilter={setIsFilter}/>
             <table>
                 <thead>
 
@@ -156,10 +106,13 @@ export default function Table({ emp, loading, log, myparams, searchparam }) {
                         >Application Type{applicationTypeSort ? <AiOutlineArrowUp /> : <AiOutlineArrowDown />}</th>
                         <th
                             onClick={() => {
-                                setApplicationSortId(!applicationsortId)
+                                setApplicationSortId(!applicationSortId)
                                 applicationIdSort()
                             }}
-                        >Application ID {applicationsortId ? <AiOutlineArrowUp /> : <AiOutlineArrowDown />}</th>
+     
+     
+     
+     >Application ID {applicationSortId ? <AiOutlineArrowUp /> : <AiOutlineArrowDown />}</th>
                         <th
                             onClick={() => {
 
@@ -182,7 +135,7 @@ export default function Table({ emp, loading, log, myparams, searchparam }) {
                 </thead>
                 <tbody>
                     {
-                        empone?.length != 0 ? empone?.map((e, index) => (
+                    empOne?.length!= 100 || isSort?empOne?.length==0?<h1>Value not found</h1>: empOne?.map((e, index) => (
                             <tr key={index}>
                                 <td>{e?.logId}</td>
                                 <td>{e?.applicationType}</td>
@@ -190,7 +143,7 @@ export default function Table({ emp, loading, log, myparams, searchparam }) {
                                 <td>{e?.actionType}</td>
                                 <td>{e?.actionDetails}</td>
                                 <td>{e?.creationTimestamp}</td>
-
+                                 <td>real{index}</td>
                             </tr>
 
                         ))
@@ -203,11 +156,13 @@ export default function Table({ emp, loading, log, myparams, searchparam }) {
                                     <td>{e.actionType}</td>
                                     <td>{e.actionDetails}</td>
                                     <td>{e.creationTimestamp}</td>
+                                    <td>'real'</td>
                                 </tr>
                             ))
                     }
                 </tbody>
             </table>
+          { !isFilter && <Pagination postPerPage={postPerPage} totalPost={totalPost}  currentPage={currentPage} paginate={paginate} />}
         </>
     )
 }

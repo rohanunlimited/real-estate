@@ -1,21 +1,40 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 import './Header.css'
 
-export default function Header({ setSearch,  emp, setStartDate, setEndDate}) {
+export default function Header({  emp, setEmpOne,setSort, empOne, setIsFilter}) {
     const [empValue, setEmpValue] = useState([]);
     const [actionType, setActionType] = useState('');
     const [applicationType, setApplicationType] = useState('');
     const [applicationId, setApplicationId] = useState('');
     const [emp2, setEmp2Value] = useState([])
     const [fdate, setfdate] = useState('');
-    const [tdate, settdate] = useState('')
+    const [tdate, settdate] = useState('');
+    const [searchParams] = useSearchParams();
+
     
     const navigate = useNavigate()
 
 
 
-
+useEffect(()=>{
+    
+  if(searchParams?.has('actionType')){
+  setActionType(searchParams?.get('actionType'))
+  }
+   if(searchParams?.has('applicationType')){
+    setApplicationType(searchParams?.get('applicationType'))
+  }
+   if(searchParams?.has('applicationId')){
+    setApplicationId(searchParams?.get('applicationId'))
+  }
+   if(searchParams?.has('startDate') && searchParams?.has('endDate')){
+     setfdate(searchParams?.get('startDate'))
+     settdate(searchParams?.get('endDate'))
+  }
+  changeUrlParams()
+},[emp])
 
 
 
@@ -54,83 +73,180 @@ export default function Header({ setSearch,  emp, setStartDate, setEndDate}) {
 
     const searchApplicationId = (e) => {
         setApplicationId(e.target.value)
-        setActionType('');
-        setApplicationType('');
-        setStartDate('');
-        setEndDate('');
-
-        navigate("/?applicationId=" + e.target.value)
+      
+    
 
     }
 
 
 
     const searchApplicationType = (e) => {
-
-        setApplicationType(e.target.value)
-        setActionType('')
-        setApplicationId('')
-        setStartDate('')
-        setEndDate('')
-        navigate("/?applicationType=" + e.target.value)
+       setApplicationType(e.target.value)
 
     }
     const searchActionType = (e) => {
-        setActionType(e.target.value)
-        setApplicationType('');
-        setApplicationId('');
-        setStartDate('');
-        setEndDate('');
-        navigate("/?actionType=" + e.target.value)
-
+      setActionType(e.target.value)
 
     }
 
     const searchFromDate = (e) => {
-        setActionType('');
-        setApplicationType('');
-        setApplicationId('');
-        const y = `${e.target.value}`.split("-")[0];
-        const m = `${e.target.value}`.split("-")[2];
-        const d = `${e.target.value}`.split("-")[1];
-
-        navigate("/?startDate=" + `${d}-${m}-${y}` + "/?endDate=" + tdate)
-        setfdate(`${d}-${m}-${y}`)
+       
+        setfdate(e.target.value)
 
     }
 
     const searchToDate = (e) => {
-        setActionType('');
-        setApplicationType('');
-        setApplicationId('');
-        const y = `${e.target.value}`.split("-")[0];
-        const m = `${e.target.value}`.split("-")[2];
-        const d = `${e.target.value}`.split("-")[1];
-        navigate("/?startDate=" + fdate + "/?endDate=" + `${d}-${m}-${y}`)
-        settdate(`${d}-${m}-${y}`)
+        settdate(e.target.value)
     }
 
 
     const handleclick = () => {
+      
+  let data=new Object();
+  let selectedFilter = [];
+  if(actionType != "")
+  {
+    setIsFilter(true)
+    selectedFilter["actionType"] = actionType;
+  }
+  if(applicationType != "")
+  {
+    setIsFilter(true)
+    selectedFilter["applicationType"] = applicationType;
+  }
+  if(fdate != "" && fdate!="Invalid Date")
+  {
+    setIsFilter(true)
+    selectedFilter["fdate"] = fdate;
+  }
+  if(tdate != "" && tdate!="Invalid Date")
+  {
+    setIsFilter(true)
+    selectedFilter["tdate"] = tdate;
+  }
+  if(applicationId != "")
+  {
+    setIsFilter(true)
+    selectedFilter["applicationId"] = applicationId;
+  }  
+  
 
-        if (actionType) {
+  data = emp?.filter((item) => {
+    let formLength = 0;
+    let matchItem = 0;
+    for (let key in selectedFilter){
+           
+            if(selectedFilter[key])
+            {
+                formLength++;    
 
-            setSearch({ 'actionType': actionType })
+                if(isNaN(selectedFilter[key])) 
+                {
+                  if(item[key])
+                  {
+                    if((item[key].toLowerCase()).toString().includes(selectedFilter[key].toLowerCase()))
+                    {
+                      matchItem++;
+                    }
+                  }
+                  
+                }
+                else {   
+                  if(item[key])
+                  {
+                    if((item[key]).toString().includes(selectedFilter[key]))
+                    {
+                      matchItem++;
+                    }
+                  }
 
-        }
-        else if (applicationType) {
-            setActionType('')
-            setSearch({ 'applicationType': applicationType })
-        } else if (applicationId) {
-            setSearch({ 'applicationId': applicationId })
-        } else if (fdate && tdate) {
-            setStartDate(fdate);
-            setEndDate(tdate)
-
-        }
-
-
+                }
+                if(key === "fdate" || key === 'tdate') 
+                {
+                  let newDate = getNewDate(item['creationTimestamp']);
+                  let start_date = selectedFilter['fdate'];
+                  let end_date = selectedFilter['tdate'];    
+                 
+                  if(newDate >= start_date && newDate <= end_date)
+                  {
+                    matchItem++;
+                  }
+                      
+                } 
+            }
+          }
+          if (matchItem === formLength) 
+          {
+            return item;
+           
+          }   
+          
+         
+        
+  });
+ 
+  
+  setEmpOne(data) 
+ 
+      
+    
     }
+
+
+    const changeUrlParams = ()=>{
+      
+  let selectedFilter = {};
+  if(actionType != "")
+  {
+    selectedFilter["actionType"] = actionType;
+    
+  }
+  if(applicationType != "")
+  {
+    selectedFilter["applicationType"] = applicationType;
+  }
+  if(fdate != "" && fdate!="Invalid Date")
+  {
+    selectedFilter["startDate"] = fdate;
+  }
+  if(tdate != "" && tdate!="Invalid Date")
+  {
+    selectedFilter["endDate"] = tdate;
+  }
+  if(applicationId != "")
+  {
+    selectedFilter["applicationId"] = applicationId;
+  }  
+
+  
+  
+        let urlparam = "?"; 
+        
+  for (let [key, value] of Object.entries(selectedFilter)) {
+    
+    if(value )
+    {
+      if(urlparam.length === 1 && urlparam === '?')
+      urlparam = urlparam +key+"="+value;
+      else
+      urlparam = urlparam + '&'+key+"="+value;
+    } 
+  }
+ 
+  handleclick() 
+   navigate(''+urlparam)
+    
+}
+
+
+     const getNewDate = (dt) => {
+      let date = new Date(dt);
+      let month = parseInt(date.getMonth())+parseInt(1);
+      month = `${month}`.length == 1? `0${month}`: month
+      let newDt = date.getFullYear()+'-'+ month+"-"+ date.getDate();
+      return newDt;
+    }
+    
     return (
 
         <div className="header">
@@ -141,8 +257,8 @@ export default function Header({ setSearch,  emp, setStartDate, setEndDate}) {
                     name="actionType"
                     defaultValue={actionType}
                     placeholder="select action type"
-
-                    onClick={(e) => searchActionType(e)}>{
+                    value={actionType}
+                    onChange={(e) => searchActionType(e)}>{
 
                         empValue?.map((em, index) => {
                             return <option key={index}>
@@ -157,8 +273,8 @@ export default function Header({ setSearch,  emp, setStartDate, setEndDate}) {
                     placeholder='select application type'
                     defaultValue={applicationType}
                     name="applicationType"
-
-                    onClick={(e) => searchApplicationType(e)}>{
+                    value={applicationType}
+                    onChange={(e) => searchApplicationType(e)}>{
                         emp2?.map(e => {
                             return <option key={e?.applicationId}>
                                 {e?.applicationType}
@@ -168,33 +284,34 @@ export default function Header({ setSearch,  emp, setStartDate, setEndDate}) {
             </div>
             <div>
                 <span>From Date</span>
-                <input type="date" placeholder='YYYY-MM-DD' data-testid='startdate' onChange={(e) => searchFromDate(e)} />
+                <input type="date" value={fdate} placeholder='YYYY-MM-DD' data-testid='startdate' onChange={(e) => searchFromDate(e)} />
             </div>
             <div>
                 <span>To Date</span>
-                <input type="date" placeholder='YYYY-MM-DD' data-id='enddate' onChange={(e) => searchToDate(e)} />
+                <input type="date" value={tdate} placeholder='YYYY-MM-DD' data-id='enddate' onChange={(e) => searchToDate(e)} />
             </div>
             <div>
                 <span>Application ID</span>
-                <input placeholder='e.g. 219841/2021' name="applicationId" onChange={(e) => searchApplicationId(e)} />
+                <input placeholder='e.g. 219841/2021'value={applicationId} name="applicationId" onChange={(e) => searchApplicationId(e)} />
             </div>
             <div>
-                <button type="button" className="button" data-testid="search" onClick={() => handleclick()} >Search Logger</button>
+                <button type="button" className="button" data-testid="search" onClick={() => changeUrlParams()} >Search Logger</button>
 
             </div>
             <div>
                 <button
                     data-testid="remove"
                     onClick={() => {
-                        setSearch({})
+                        setEmpOne(empOne)
+                        setSort(false)
                         navigate("/")
                         setActionType("")
                         setApplicationType("");
                         setApplicationId("")
                         setfdate("");
                         settdate("")
-                        window.location.reload()
-                    }}>remove filter</button>
+                        setIsFilter(false)
+                    }}>remove filter/sort</button>
             </div>
         </div>
     )
