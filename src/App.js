@@ -8,8 +8,7 @@ import { Route, Routes } from 'react-router-dom';
 
 function App() {
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(10);
+ 
   const [loading, setLoading] = useState(true)
   const [emp, setEmp] = useState([]);
   const [isFilter, setIsFilter] = useState(false)
@@ -30,24 +29,16 @@ function App() {
     }
   }, [])
 
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = emp.slice(indexOfFirstPost, indexOfLastPost);
 
-  const paginate = (num) => {
-    setLoading(true)
-    setCurrentPage(num)
-    setTimeout(() => {
-      setLoading(false)
-    }, 10)
-  }
+
+  
   return (
     <div data-testid='app' className="App">
       <Routes>
-        <Route path='/' element={<Table emp={currentPosts} log={emp} loading={loading} setIsFilter={setIsFilter} postPerPage={postsPerPage}
-          totalPost={emp.length}
-          currentPage={currentPage}
-          paginate={paginate}
+        <Route path='/' element={<Table  log={emp} loading={loading} setIsFilter={setIsFilter} 
+          setLoading={setLoading}
+          setEmp={setEmp}
+        
           isFilter={isFilter}
         />} />
       </Routes>

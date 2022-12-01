@@ -4,8 +4,9 @@ import { AiOutlineArrowUp } from 'react-icons/ai'
 import { AiOutlineArrowDown } from 'react-icons/ai';
 import './Table.css'
 import Pagination from './Pagination';
+import { Navigate, useNavigate } from 'react-router';
 
-export default function Table({ emp,  log,loading,isFilter,postPerPage, totalPost,currentPage,paginate, setIsFilter }) {
+export default function Table({ log,isFilter, loading, setIsFilter,setEmp, setLoading }) {
     const [empOne, setEmpOne] = useState([]);
     const [sortLogId, setSortLogId] = useState('');
     const [applicationSortId, setApplicationSortId] = useState('');
@@ -13,16 +14,33 @@ export default function Table({ emp,  log,loading,isFilter,postPerPage, totalPos
     const [sortActionType, setSortActionType] = useState(false);
     const [dateSort, setDateSort] = useState(false);
     const[isSort, setSort] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostsPerPage] = useState(10);
 
 useEffect(()=>{
  handlelog()
 },[loading])
 
+const indexOfLastPost = currentPage * postsPerPage;
+const indexOfFirstPost = indexOfLastPost - postsPerPage;
+const currentPosts = empOne.length==0 || empOne.length == 100 ? log.slice(indexOfFirstPost, indexOfLastPost): empOne.slice(indexOfFirstPost, indexOfLastPost);
+const navigate = useNavigate()
+const paginate = (num) => {
+    setLoading(true)
+    setCurrentPage(num)
+    setTimeout(() => {
+      setLoading(false)
+    }, 10)
+  }
+
     const handlelog = ()=>{
+       
         if(!isFilter){
-           setEmpOne(emp)
+           setEmpOne(log)
         }else {
             setEmpOne(empOne)
+          
+        
         }
     }
     
@@ -35,6 +53,7 @@ useEffect(()=>{
             em = log?.sort((a, b) => a.logId - b.logId)
         }
         setEmpOne(em)
+        navigate("/")
     }
 
     const applicationIdSort = () => {
@@ -46,50 +65,47 @@ useEffect(()=>{
             em = log?.sort((a, b) => a.applicationId - b.applicationId)
         }
         setEmpOne(em)
+        navigate("/")
     }
 
 
-    const applicationTypeBySort = () => {
+    const applicationTypeBySort = (type) => {
         setSort(true)
         let em = []
-        em = log?.sort((a, b) => {
+        em = empOne.length==0 || empOne.length == 100 ?log?.sort((a, b) => {
+            if(type==="applicationType"){
             const isreversed = applicationTypeSort ? 1 : -1
             return isreversed * a?.applicationType?.localeCompare(b.applicationType)
+            }
+            else if(type==="actionType"){
+                const isreversed = sortActionType ? 1 : -1
+                return isreversed * a?.actionType?.localeCompare(b.actionType)
+            }
+            else if(type==="dateSort"){
+                const isreversed = dateSort ? 1 : -1
+                return isreversed * a?.creationTimestamp?.localeCompare(b.creationTimestamp)
+            }
+        }):empOne.sort((a,b)=>{
+            if(type==="applicationType"){
+                const isreversed = applicationTypeSort ? 1 : -1
+                return isreversed * a?.applicationType?.localeCompare(b.applicationType)
+                }
+                else if(type==="actionType"){
+                    const isreversed = sortActionType ? 1 : -1
+                    return isreversed * a?.actionType?.localeCompare(b.actionType)
+                }
+                else if(type==="dateSort"){
+                    const isreversed = dateSort ? 1 : -1
+                    return isreversed * a?.creationTimestamp?.localeCompare(b.creationTimestamp)
+                }
         })
         setEmpOne(em)
-    }
-
-    const actionTypeSort = () => {
-        setSort(true)
-        let em = [];
-        
-
-
-        em = log?.sort((a, b) => {
-            const isreversed = sortActionType ? 1 : -1;
-            return isreversed * a.actionType.localeCompare(b.actionType)
-        })
-        setEmpOne(em)
-
-
-
-
-    }
-
-    const dateBySort = () => {
-        setSort(true)
-        let em = [];
-        em = log?.sort((a, b) => {
-            const isreversed = dateSort ? 1 : -1;
-            return isreversed * a.creationTimestamp.localeCompare(b.creationTimestamp)
-        })
-        setEmpOne(em)
-
+        navigate("/")
     }
 
     return (
         <>
-            <Header emp={log} empOne={emp} setSort={setSort} setEmpOne={setEmpOne}  setIsFilter={setIsFilter}/>
+            <Header emp={log} empOne={currentPosts} setCurrentPage={setCurrentPage} setSort={setSort} setEmpOne={setEmpOne}  setIsFilter={setIsFilter} setEmp={setEmp}/>
             <table>
                 <thead>
 
@@ -101,7 +117,7 @@ useEffect(()=>{
                         <th
                             onClick={() => {
                                 setApplicationTypeSort(!applicationTypeSort)
-                                applicationTypeBySort()
+                                applicationTypeBySort('applicationTypeSort')
                             }}
                         >Application Type{applicationTypeSort ? <AiOutlineArrowUp /> : <AiOutlineArrowDown />}</th>
                         <th
@@ -117,7 +133,7 @@ useEffect(()=>{
                             onClick={() => {
 
                                 setSortActionType(!sortActionType);
-                                actionTypeSort()
+                                applicationTypeSort('actionType')
 
 
                             }}
@@ -127,7 +143,7 @@ useEffect(()=>{
                         <th
                             onClick={() => {
                                 setDateSort(!dateSort);
-                                dateBySort()
+                                applicationTypeSort('dateSort')
                             }}
                         >Date:Time sort{dateSort ? <AiOutlineArrowUp /> : <AiOutlineArrowDown />}</th>
                     </tr>
@@ -135,7 +151,7 @@ useEffect(()=>{
                 </thead>
                 <tbody>
                     {
-                    empOne?.length!= 100 || isSort?empOne?.length==0?<h1>Value not found</h1>: empOne?.map((e, index) => (
+                    (empOne?.length!= 100 || isSort) ?empOne?.length==0?<h1>Value not found</h1>:  currentPosts?.map((e, index) => (
                             <tr key={index}>
                                 <td>{e?.logId}</td>
                                 <td>{e?.applicationType}</td>
@@ -143,12 +159,12 @@ useEffect(()=>{
                                 <td>{e?.actionType}</td>
                                 <td>{e?.actionDetails}</td>
                                 <td>{e?.creationTimestamp}</td>
-                                 <td>real{index}</td>
+                                 
                             </tr>
 
                         ))
 
-                            : emp?.map((e, index) => (
+                            : currentPosts?.map((e, index) => (
                                 <tr key={index}>
                                     <td>{e.logId}</td>
                                     <td>{e.applicationType}</td>
@@ -156,13 +172,16 @@ useEffect(()=>{
                                     <td>{e.actionType}</td>
                                     <td>{e.actionDetails}</td>
                                     <td>{e.creationTimestamp}</td>
-                                    <td>'real'</td>
+                                    
                                 </tr>
                             ))
                     }
                 </tbody>
             </table>
-          { !isFilter && <Pagination postPerPage={postPerPage} totalPost={totalPost}  currentPage={currentPage} paginate={paginate} />}
+          {
+            empOne.length != 0 && 
+          <Pagination postPerPage={postsPerPage} totalPost={empOne.length == 0 || empOne.length == 100 ?log.length:empOne.length}  currentPage={currentPage} paginate={paginate} />
+          }
         </>
     )
 }

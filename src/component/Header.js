@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import './Header.css'
 
-export default function Header({  emp, setEmpOne,setSort, empOne, setIsFilter}) {
+export default function Header({  emp, setEmpOne,setSort, empOne, setIsFilter, setEmp,setCurrentPage}) {
     const [empValue, setEmpValue] = useState([]);
     const [actionType, setActionType] = useState('');
     const [applicationType, setApplicationType] = useState('');
@@ -73,9 +73,6 @@ useEffect(()=>{
 
     const searchApplicationId = (e) => {
         setApplicationId(e.target.value)
-      
-    
-
     }
 
 
@@ -124,6 +121,7 @@ useEffect(()=>{
     setIsFilter(true)
     selectedFilter["tdate"] = tdate;
   }
+  
   if(applicationId != "")
   {
     setIsFilter(true)
@@ -167,12 +165,21 @@ useEffect(()=>{
                   let start_date = selectedFilter['fdate'];
                   let end_date = selectedFilter['tdate'];    
                  
+                  if(start_date && end_date){
                   if(newDate >= start_date && newDate <= end_date)
                   {
                     matchItem++;
-                  }
+                  }}
+                  else if(start_date){
+                    if((item["creationTimestamp"].toLowerCase()).toString().includes(start_date)){
+                        matchItem++
+                    }
+
+                  }   
+                
+                }
                       
-                } 
+                
             }
           }
           if (matchItem === formLength) 
@@ -187,8 +194,9 @@ useEffect(()=>{
  
   
   setEmpOne(data) 
+  
  
-      
+  setCurrentPage(1)
     
     }
 
@@ -300,9 +308,11 @@ useEffect(()=>{
             </div>
             <div>
                 <button
+                className="button"
                     data-testid="remove"
                     onClick={() => {
-                        setEmpOne(empOne)
+                        setEmpOne(emp)
+                        navigate("/")
                         setSort(false)
                         navigate("/")
                         setActionType("")
@@ -311,7 +321,7 @@ useEffect(()=>{
                         setfdate("");
                         settdate("")
                         setIsFilter(false)
-                    }}>remove filter/sort</button>
+                    }}>remove filter</button>
             </div>
         </div>
     )
