@@ -129,7 +129,7 @@ const paginate = (num) => {
                         <th>Action Details</th>
                         <th
                     
-                        >Date:Time sort <AiOutlineArrowUp onClick={()=> applicationTypeBySort('dateSort','asc')} /> <AiOutlineArrowDown onClick={()=> applicationTypeBySort('datesort', 'dsc')}/></th>
+                        >Date:Time sort <AiOutlineArrowUp onClick={()=> applicationTypeBySort('dateSort','asc')} /> <AiOutlineArrowDown onClick={()=> applicationTypeBySort('dateSort', 'dsc')}/></th>
                     </tr>
 
                 </thead>
