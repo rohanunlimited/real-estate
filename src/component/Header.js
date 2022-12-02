@@ -260,7 +260,7 @@ export default function Header({ emp, setEmpOne, setSort, empOne, setIsFilter, s
       </div>
       <div>
         <button
-          className="button"
+          className="buttonRemove"
           data-testid="remove"
           onClick={() => {
             setEmpOne(emp)
