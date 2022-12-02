@@ -6,9 +6,7 @@ import Table from './component/Table';
 import { Route, Routes } from 'react-router-dom';
 
 
-function App() {
-
- 
+function App() { 
   const [loading, setLoading] = useState(true)
   const [emp, setEmp] = useState([]);
   const [isFilter, setIsFilter] = useState(false)
@@ -39,21 +37,11 @@ function App() {
   return (
     <div data-testid='app' className="App">
       <Routes>
-        <Route path='/' element={
-          
-          <Table  log={emp} loading={loading} setIsFilter={setIsFilter} 
+        <Route path='/' element={<Table  log={emp} loading={loading} setIsFilter={setIsFilter} 
           setLoading={setLoading}
           setEmp={setEmp}
-        
-          isFilter={isFilter}
-        
-        /> }/>
-
-        
+          isFilter={isFilter}/> }/>
       </Routes>
-
-
-      {/* { !isFilter && } */}
     </div>
   );
 }
