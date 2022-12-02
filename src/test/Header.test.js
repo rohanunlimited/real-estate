@@ -4,7 +4,8 @@ import Header from "../component/Header";
 import { BrowserRouter as Router } from 'react-router-dom'
 
 test('Header', () => {
-        render(<Router><Header /></Router>);
+
+        render(<Router><Header setEmpOne={()=>{}} setCurrentPage={()=>{}}/></Router>);
 
 
         const placeholderElementtwo = screen.getByPlaceholderText(/select action type/i);
