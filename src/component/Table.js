@@ -100,7 +100,7 @@ const paginate = (num) => {
                 return isreversed * a?.creationTimestamp?.localeCompare(b.creationTimestamp)
             }
         })
-        console.log('newsort',em)
+       
         setEmpOne(em)
         navigate("/")
     }
