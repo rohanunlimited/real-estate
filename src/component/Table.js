@@ -23,7 +23,7 @@ useEffect(()=>{
 
 const indexOfLastPost = currentPage * postsPerPage;
 const indexOfFirstPost = indexOfLastPost - postsPerPage;
-const currentPosts = empOne.length==0 || empOne.length == 100 ? log.slice(indexOfFirstPost, indexOfLastPost): empOne.slice(indexOfFirstPost, indexOfLastPost);
+const currentPosts = empOne?.length==0 || empOne?.length == 100 ? log?.slice(indexOfFirstPost, indexOfLastPost): empOne?.slice(indexOfFirstPost, indexOfLastPost);
 const navigate = useNavigate()
 const paginate = (num) => {
     setLoading(true)
@@ -44,61 +44,63 @@ const paginate = (num) => {
         }
     }
     
-    const sortLogById = () => {
-        setSort(true)
+   
+
+    const sortLogById = (order) => {
+        
         let em = []
-        if (sortLogId) {
-            em = log?.sort((a, b) => b.logId - a.logId)
+        if (order === 'dsc') {
+           
+            em = log?.sort((a, b) => b?.logId - a?.logId)
+            
+           
         } else {
-            em = log?.sort((a, b) => a.logId - b.logId)
+           
+            em = log?.sort((a, b) => a?.logId - b?.logId)
+          
         }
         setEmpOne(em)
         navigate("/")
     }
 
-    const applicationIdSort = () => {
-        setSort(true)
+    const applicationIdSort = (order) => {
+        
         let em = []
-        if (applicationSortId) {
-            em = log?.sort((a, b) => b.applicationId - a.applicationId)
+        if (order === 'dsc') {
+        
+            em = log?.sort((a, b) => b?.applicationId - a?.applicationId)
+            
+            
+           
         } else {
-            em = log?.sort((a, b) => a.applicationId - b.applicationId)
+    
+            em = log?.sort((a, b) => a?.applicationId - b?.applicationId)
+           
         }
         setEmpOne(em)
         navigate("/")
     }
 
 
-    const applicationTypeBySort = (type) => {
-        setSort(true)
+    const applicationTypeBySort = (type, order) => {
+        navigate("/")
+      
         let em = []
-        em = empOne.length==0 || empOne.length == 100 ?log?.sort((a, b) => {
+        em = log?.sort((a, b) => {
             if(type==="applicationType"){
-            const isreversed = applicationTypeSort ? 1 : -1
+            const isreversed = order === 'asc' ? 1 : -1
             return isreversed * a?.applicationType?.localeCompare(b.applicationType)
             }
             else if(type==="actionType"){
-                const isreversed = sortActionType ? 1 : -1
+                const isreversed = order === 'asc' ? 1 : -1
                 return isreversed * a?.actionType?.localeCompare(b.actionType)
             }
             else if(type==="dateSort"){
-                const isreversed = dateSort ? 1 : -1
+                const isreversed = order === 'asc' ? 1 : -1
                 return isreversed * a?.creationTimestamp?.localeCompare(b.creationTimestamp)
             }
-        }):empOne.sort((a,b)=>{
-            if(type==="applicationType"){
-                const isreversed = applicationTypeSort ? 1 : -1
-                return isreversed * a?.applicationType?.localeCompare(b.applicationType)
-                }
-                else if(type==="actionType"){
-                    const isreversed = sortActionType ? 1 : -1
-                    return isreversed * a?.actionType?.localeCompare(b.actionType)
-                }
-                else if(type==="dateSort"){
-                    const isreversed = dateSort ? 1 : -1
-                    return isreversed * a?.creationTimestamp?.localeCompare(b.creationTimestamp)
-                }
         })
+        console.log('newsort',em)
         setEmpOne(em)
         navigate("/")
     }
@@ -110,42 +112,24 @@ const paginate = (num) => {
                 <thead>
 
                     <tr>
-                        <th onClick={() => {
-                            setSortLogId(!sortLogId)
-                            sortLogById()
-                        }}>LogId  {sortLogId ? <AiOutlineArrowUp /> : <AiOutlineArrowDown />}</th>
+                        <th >LogId <AiOutlineArrowUp onClick={()=> sortLogById('asc')} /> <AiOutlineArrowDown onClick={()=>sortLogById('dsc')}/></th>
                         <th
-                            onClick={() => {
-                                setApplicationTypeSort(!applicationTypeSort)
-                                applicationTypeBySort('applicationTypeSort')
-                            }}
-                        >Application Type{applicationTypeSort ? <AiOutlineArrowUp /> : <AiOutlineArrowDown />}</th>
+                          
+                        >Application Type<AiOutlineArrowUp onClick={()=> applicationTypeBySort('applicationType','asc')}/> <AiOutlineArrowDown onClick={()=> applicationTypeBySort('applicationType','dsc')} /></th>
                         <th
-                            onClick={() => {
-                                setApplicationSortId(!applicationSortId)
-                                applicationIdSort()
-                            }}
+                             
      
      
      
-     >Application ID {applicationSortId ? <AiOutlineArrowUp /> : <AiOutlineArrowDown />}</th>
+     >Application ID  <AiOutlineArrowUp  onClick={()=> applicationIdSort('asc') } />  <AiOutlineArrowDown  onClick={()=> applicationIdSort('dsc')}/></th>
                         <th
-                            onClick={() => {
+                    
 
-                                setSortActionType(!sortActionType);
-                                applicationTypeSort('actionType')
-
-
-                            }}
-
-                        >Action{sortActionType ? <AiOutlineArrowUp /> : <AiOutlineArrowDown />}</th>
+                        >Action<AiOutlineArrowUp onClick={()=> applicationTypeBySort('actionType','asc')} />  <AiOutlineArrowDown onClick={()=> applicationTypeBySort('actionType','dsc')} /></th>
                         <th>Action Details</th>
                         <th
-                            onClick={() => {
-                                setDateSort(!dateSort);
-                                applicationTypeSort('dateSort')
-                            }}
-                        >Date:Time sort{dateSort ? <AiOutlineArrowUp /> : <AiOutlineArrowDown />}</th>
+                    
+                        >Date:Time sort <AiOutlineArrowUp onClick={()=> applicationTypeBySort('dateSort','asc')} /> <AiOutlineArrowDown onClick={()=> applicationTypeBySort('datesort', 'dsc')}/></th>
                     </tr>
 
                 </thead>
@@ -179,8 +163,8 @@ const paginate = (num) => {
                 </tbody>
             </table>
           {
-            empOne.length != 0 && 
-          <Pagination postPerPage={postsPerPage} totalPost={empOne.length == 0 || empOne.length == 100 ?log.length:empOne.length}  currentPage={currentPage} paginate={paginate} />
+            empOne?.length != 0 && 
+          <Pagination postPerPage={postsPerPage} totalPost={empOne?.length == 0 || empOne?.length == 100 ?log?.length:empOne?.length}  currentPage={currentPage} paginate={paginate} />
           }
         </>
     )
