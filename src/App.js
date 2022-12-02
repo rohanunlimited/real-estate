@@ -39,12 +39,17 @@ function App() {
   return (
     <div data-testid='app' className="App">
       <Routes>
-        <Route path='/' element={<Table  log={emp} loading={loading} setIsFilter={setIsFilter} 
+        <Route path='/' element={
+          
+          <Table  log={emp} loading={loading} setIsFilter={setIsFilter} 
           setLoading={setLoading}
           setEmp={setEmp}
         
           isFilter={isFilter}
-        />} />
+        
+        /> }/>
+
+        
       </Routes>
 
 

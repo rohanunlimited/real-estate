@@ -135,8 +135,8 @@ const paginate = (num) => {
                 </thead>
                 <tbody>
                     {
-                    (empOne?.length!= 100 || isSort) ?empOne?.length==0?<h1>Value not found</h1>:  currentPosts?.map((e, index) => (
-                            <tr key={index}>
+                    (empOne?.length!= 100 || isSort) ?empOne?.length==0?<>Value not found</>:  currentPosts?.map((e, index) => (
+                            <tr key={e?.logId}>
                                 <td>{e?.logId}</td>
                                 <td>{e?.applicationType}</td>
                                 <td>{e?.applicationId}</td>
@@ -149,7 +149,7 @@ const paginate = (num) => {
                         ))
 
                             : currentPosts?.map((e, index) => (
-                                <tr key={index}>
+                                <tr key={e?.logId}>
                                     <td>{e.logId}</td>
                                     <td>{e.applicationType}</td>
                                     <td>{e.applicationId}</td>

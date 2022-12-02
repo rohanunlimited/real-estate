@@ -263,13 +263,12 @@ useEffect(()=>{
                 <span>Action type</span>
                 <select
                     name="actionType"
-                    defaultValue={actionType}
                     placeholder="select action type"
                     value={actionType}
                     onChange={(e) => searchActionType(e)}>{
 
                         empValue?.map((em, index) => {
-                            return <option key={index}>
+                            return <option key={`${em?.logId}`}>
                                 {em?.actionType}
                             </option>
                         })
@@ -279,12 +278,11 @@ useEffect(()=>{
                 <span>Application type</span>
                 <select
                     placeholder='select application type'
-                    defaultValue={applicationType}
                     name="applicationType"
                     value={applicationType}
                     onChange={(e) => searchApplicationType(e)}>{
                         emp2?.map(e => {
-                            return <option key={e?.applicationId}>
+                            return <option key={`${e?.logId}`}>
                                 {e?.applicationType}
                             </option>
                         })
