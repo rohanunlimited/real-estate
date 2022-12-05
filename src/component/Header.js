@@ -43,7 +43,7 @@ export default function Header({ emp, setEmpOne, setSort, empOne, setIsFilter, s
         res[emp[i].actionType] = 1;
       }
     }
-    emp2.unshift(null)
+    
     setEmpValue(emp2)
     const emp3 = [];
     const response = {};
@@ -51,14 +51,16 @@ export default function Header({ emp, setEmpOne, setSort, empOne, setIsFilter, s
       if (response[emp[i].applicationType]) {
         continue
       } else {
+        if(emp[i].applicationType != null){
         emp3.push(emp[i]);
         response[emp[i].applicationType] = 1;
+        }
       }
     }
-    emp3.unshift(null)
+    
     setEmp2Value(emp3)
 
-  }, [emp])
+  }, [emp,searchParams])
 
   const searchApplicationId = (e) => {
     setApplicationId(e.target.value)
@@ -221,11 +223,15 @@ export default function Header({ emp, setEmpOne, setSort, empOne, setIsFilter, s
           placeholder="select action type"
           value={actionType}
           onChange={(e) => searchActionType(e)}>{
-            empValue?.map((em, index) => {
+            <>
+            <option selected="true" style={{'display':'none'}}></option>
+          { empValue?.map((em, index) => {
               return <option key={`${em?.logId}`}>
                 {em?.actionType}
               </option>
             })
+          }
+            </>
           }</select>
       </div>
       <div>
@@ -235,11 +241,16 @@ export default function Header({ emp, setEmpOne, setSort, empOne, setIsFilter, s
           name="applicationType"
           value={applicationType}
           onChange={(e) => searchApplicationType(e)}>{
+            <>
+            <option selected="true" style={{display:'none'}}></option>
+            {
             emp2?.map(e => {
               return <option key={`${e?.logId}`}>
                 {e?.applicationType}
               </option>
             })
+          }
+            </>
           }</select>
       </div>
       <div>

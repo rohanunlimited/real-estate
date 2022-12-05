@@ -31,3 +31,11 @@ select {
     width:8vw;
     border-radius:5px;
 }
+
+input:hover{
+    border:2px solid blue
+
+}
+select:hover{
+ border: 2px solid blue; 
+}

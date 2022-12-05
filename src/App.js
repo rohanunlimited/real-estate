@@ -17,12 +17,23 @@ function App() {
     try {
       setLoading(true)
       const res = await axios.get("https://run.mocky.io/v3/a2fbc23e-069e-4ba5-954c-cd910986f40f");
-      const array = [...res.data.result.auditLog]
+      let array = [...res.data.result.auditLog];
+        array = array.map((e)=>{
+          if(!e.applicationType){
+            e.applicationType = ' ';
+          }
+          if(!e.actionDetails){
+            e.actionDetails = ' ';
+          }
         
+          return e
+        })
       const a = array.sort((a,b)=>{
         const reversed = -1;
         return reversed* a?.applicationType?.localeCompare(b?.applicationType)
       })
+
+
       setEmp(a)
       setLoading(false);
 

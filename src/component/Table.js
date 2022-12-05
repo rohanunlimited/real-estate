@@ -1,18 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect,  useState } from 'react'
 import Header from './Header'
 import { AiOutlineArrowUp } from 'react-icons/ai'
 import { AiOutlineArrowDown } from 'react-icons/ai';
 import './Table.css'
 import Pagination from './Pagination';
-import { Navigate, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 
 export default function Table({ log, isFilter, loading, setIsFilter, setEmp, setLoading }) {
     const [empOne, setEmpOne] = useState([]);
-    const [sortLogId, setSortLogId] = useState('');
-    const [applicationSortId, setApplicationSortId] = useState('');
-    const [applicationTypeSort, setApplicationTypeSort] = useState(false);
-    const [sortActionType, setSortActionType] = useState(false);
-    const [dateSort, setDateSort] = useState(false);
     const [isSort, setSort] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage, setPostsPerPage] = useState(10);
@@ -60,7 +55,7 @@ export default function Table({ log, isFilter, loading, setIsFilter, setEmp, set
 
         }
         setEmpOne(em)
-        navigate("/")
+        navigate("/"+'')
     }
 
     const applicationIdSort = (order) => {
@@ -78,7 +73,7 @@ export default function Table({ log, isFilter, loading, setIsFilter, setEmp, set
 
         }
         setEmpOne(em)
-        navigate("/")
+        navigate("/"+'')
     }
 
 
@@ -89,15 +84,15 @@ export default function Table({ log, isFilter, loading, setIsFilter, setEmp, set
         em = log?.sort((a, b) => {
             if (type === "applicationType") {
                 const isreversed = order === 'asc' ? 1 : -1
-                return isreversed * a?.applicationType?.localeCompare(b.applicationType)
+                return isreversed * a.applicationType?.localeCompare(b.applicationType)
             }
             else if (type === "actionType") {
                 const isreversed = order === 'asc' ? 1 : -1
-                return isreversed * a?.actionType?.localeCompare(b.actionType)
+                return isreversed * a.actionType?.localeCompare(b.actionType)
             }
             else if (type === "dateSort") {
                 const isreversed = order === 'asc' ? 1 : -1
-                return isreversed * a?.creationTimestamp?.localeCompare(b.creationTimestamp)
+                return isreversed * a.creationTimestamp?.localeCompare(b.creationTimestamp)
             }
         })
 

@@ -23,7 +23,7 @@ Launches the test runner in the interactive watch mode.\
 
 
 ### `npm run build`
-I have deployed the app on netlify please use this link = https://coruscating-parfait-76b9a1.netlify.app/
+I have deployed the app on netlify please use this link = https://harmonious-cocada-5ed5a0.netlify.app/
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
